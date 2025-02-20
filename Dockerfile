@@ -16,4 +16,4 @@ COPY --from=build /out .
 EXPOSE 80
 
 # Start the app
-ENTRYPOINT ["dotnet", "TodoListApp.dll"]
+ENTRYPOINT ["dotnet", "ToDoListApp.dll"]
