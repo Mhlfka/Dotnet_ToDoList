@@ -1,0 +1,38 @@
+@model RegisterViewModel
+
+<head>
+    <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true" />
+</head>
+
+<div class="containered">
+<form asp-action="Register" method="post" class="mt-5">
+    <h2>Hisob yaratish</h2>
+    
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="inputs">
+    <div class="form-group">
+        @* <label asp-for="Email"></label> *@
+        <input class="form-control" r asp-for="Email" placeholder="Enter your email" />
+        <span asp-validation-for="Email" class="text-danger"class="form-control"></span>
+
+    </div>
+    <div class="form-group">
+        @* <label asp-for="Password"></label> *@
+        <input class="form-control" r asp-for="Password" type="password" placeholder="Enter your password"/>
+        <span asp-validation-for="Password" class="text-danger"class="form-control"></span>
+
+    </div>
+    <div class="form-group">
+        @* <label asp-for="ConfirmPassword"></label> *@
+        <input class="form-control"  asp-for="ConfirmPassword" type="password" placeholder="Confirm your password"/>    
+        <span asp-validation-for="ConfirmPassword" class="text-danger"class="form-control"></span>
+
+    </div>
+    </div>
+    <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-primary mt-2">Create Account</button> <a asp-action="Login">Already have account</a>
+    </div>
+    </form>
+</div>
+
+@await Html.PartialAsync("_ValidationScriptsPartial")

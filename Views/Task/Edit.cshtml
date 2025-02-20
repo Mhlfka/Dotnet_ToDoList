@@ -1,0 +1,28 @@
+@model ToDoListApp.Models.TaskItem
+
+<head>
+    <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true" />
+</head>
+
+
+<div class="container_wrapper">
+<div class="containered">
+<h1>Edit Task</h1>
+
+
+<form asp-action="Edit">
+    <input type="hidden" asp-for="Id" />
+    <div class="inputs">
+    <div class="input">
+        @* <label>Description</label> *@
+        <input asp-for="Description" placeholder="Task description"/>
+    </div>
+    <div class="input">
+        @* <label>Due Date</label> *@
+        <input asp-for="DueDate" type="date" placeholder="DueDate"/>
+    </div>
+    </div>
+    <button class="button" type="submit">Save</button>
+</form>
+</div>
+</div>

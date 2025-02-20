@@ -1,0 +1,98 @@
+@model IEnumerable<ToDoListApp.Models.TaskItem>
+
+<head>
+    <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true" />
+</head>
+
+<header>
+    <nav>
+        <div class="container-fluid">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <span class="navbar-text">@User.Identity.Name</span>
+                <a asp-controller="Account" asp-action="Logout" class="nav-link text-dark">Logout</a>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login" class="nav-link text-dark">Login</a>
+                <a asp-controller="Account" asp-action="Register" class="nav-link text-dark">Register</a>
+            }
+        </div>
+    </nav>
+</header>
+
+<div class="todo-container">
+    <h1>To-Do List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Due Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                // Set default background color
+                var backgroundColor = "";
+                var textColor = "";
+
+                // Check if task is due today or overdue
+                if (item.DueDate.Date == DateTime.Today && !item.IsCompleted)
+                {
+                    backgroundColor = "background-color: #E5F100;";
+                }
+                else if (item.DueDate.Date < DateTime.Today && !item.IsCompleted)
+                {
+                    backgroundColor = "background-color: #FF7376; color: white;";
+                }
+
+                <tr style="@backgroundColor @textColor">
+                    <td>@item.Description</td>
+                    <td>@item.DueDate.ToString("d")</td>
+                    <td>
+                        <input type="checkbox" @(item.IsCompleted ? "checked" : "")
+                            onchange="updateStatus(this, '@item.Id')" />
+                        <span class="status-text" id="status-@item.Id">
+                            @(item.IsCompleted ? "Done" : "")
+                        </span>
+                    </td>
+                    <td class="no-bg">
+                        <button class="edit-btn"
+                            onclick="location.href='@Url.Action("Edit", "Task", new { id = item.Id })'">Edit</button>
+                        <button class="delete-btn"
+                            onclick="location.href='@Url.Action("Delete", "Task", new { id = item.Id })'">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+     <button class="add-task-btn" onclick="location.href='@Url.Action("Create", "Task")'">Add New Task</button>
+
+    <!-- Show notifications for tasks due today -->
+@if (ViewData["DueTasks"] != null)
+{
+    var dueTasks = ViewData["DueTasks"] as List<ToDoListApp.Models.TaskItem>;
+    if (dueTasks.Any())
+    {
+            <script type="text/javascript">
+                alert("You have tasks due today!");
+            </script>
+    }
+}
+    <div>
+
+
+        <script>
+            function updateStatus(checkbox, taskId) {
+                const statusText = document.getElementById(`status-${taskId}`);
+                if (checkbox.checked) {
+                    statusText.innerText = 'Done';
+                } else {
+                    statusText.innerText = '';
+                }
+            }
+        </script>

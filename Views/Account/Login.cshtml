@@ -1,0 +1,35 @@
+@model LoginViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true" />
+</head>
+
+<body>
+    <div class="containered">
+        <form asp-action="Login" method="post">
+            <h2>SIGN IN</h2>
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="inputs">
+            <div class="form-group">
+                <input asp-for="Email" type="email" class="form-control" placeholder="Enter your email">
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input asp-for="Password" type="password" class="form-control" placeholder="Enter your password">
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            </div>
+            <button type="submit" class="button">LOGIN</button>
+            <a href="@Url.Action("Register", "Account")" class="button">REGISTRATION</a>
+        </form>
+    </div>
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+</body>
+
+</html>
