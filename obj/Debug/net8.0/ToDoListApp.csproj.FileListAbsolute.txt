@@ -128,3 +128,4 @@ C:\DOTNET\ToDoListApp\obj\Debug\net8.0\ref\ToDoListApp.dll
 C:\DOTNET\ToDoListApp\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 C:\DOTNET\ToDoListApp\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.UI.dll
 C:\DOTNET\ToDoListApp\obj\Debug\net8.0\ToDoListApp.MvcApplicationPartsAssemblyInfo.cs
+C:\DOTNET\ToDoListApp\obj\Debug\net8.0\ToDoListApp.sourcelink.json
