@@ -33,7 +33,7 @@ public class AccountController : Controller
             if (result.Succeeded)
             {
                 await _signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToAction("Index", "Home"); // Redirect to your task list or appropriate action
+                return RedirectToAction("Index", "Home"); // Redirect to task list
             }
             foreach (var error in result.Errors)
             {
@@ -47,6 +47,10 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult Login()
     {
+        if (User.Identity.IsAuthenticated)
+        {
+            return RedirectToAction("Index", "Home"); // Redirect to Home if already logged in
+        }
         return View();
     }
 
@@ -57,27 +61,29 @@ public class AccountController : Controller
     {
         if (ModelState.IsValid)
         {
-            var user = await _signInManager.UserManager.FindByNameAsync(model.Email);
+            var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                ModelState.AddModelError(string.Empty, "Foydalanuvchi mavjud emas!");
+                ModelState.AddModelError(string.Empty, "User does not exist!");
                 return View(model);
             }
 
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: false, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(user, model.Password, isPersistent: false, lockoutOnFailure: false);
             if (result.Succeeded)
             {
-                return RedirectToAction("Index", "Home"); // Redirect to your task list or appropriate action
+                return RedirectToAction("Index", "Home"); // Redirect to Home after successful login
             }
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");
         }
         return View(model);
     }
 
-    // GET: /Account/Logout
+    // POST: /Account/Logout
+    [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()
     {
         await _signInManager.SignOutAsync();
-        return RedirectToAction("Index", "Home"); // Redirect to your home page or appropriate action
+        return RedirectToAction("Login", "Account"); // Redirect to Login after logout
     }
 }

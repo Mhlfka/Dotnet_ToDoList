@@ -10,7 +10,11 @@
             @if (User.Identity.IsAuthenticated)
             {
                 <span class="navbar-text">@User.Identity.Name</span>
-                <a asp-controller="Account" asp-action="Logout" class="nav-link text-dark">Logout</a>
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit" class="btn btn-link">Logout</button>
+                </form>
+
+
             }
             else
             {
@@ -70,7 +74,7 @@
         </tbody>
     </table>
 
-     <button class="add-task-btn" onclick="location.href='@Url.Action("Create", "Task")'">Add New Task</button>
+    <button class="add-task-btn" onclick="location.href='@Url.Action("Create", "Task")'">Add New Task</button>
 
     <!-- Show notifications for tasks due today -->
 @if (ViewData["DueTasks"] != null)
