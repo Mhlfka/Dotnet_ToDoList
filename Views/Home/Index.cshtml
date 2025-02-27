@@ -2,6 +2,7 @@
 
 <head>
     <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <header>
@@ -13,8 +14,6 @@
                 <form asp-controller="Account" asp-action="Logout" method="post">
                     <button type="submit" class="btn btn-link">Logout</button>
                 </form>
-
-
             }
             else
             {
@@ -27,11 +26,42 @@
 
 <div class="todo-container">
     <h1>To-Do List</h1>
+    
+
+    <!-- Filtering Form -->
+    <form method="get" asp-action="Index" asp-controller="Task">
+        <label for="description">Description:</label>
+        <input type="text" name="description" id="description" />
+
+        <label for="dueDate">Due Date & Time:</label>
+        <input type="datetime-local" name="dueDate" id="dueDate" />
+
+        <label for="isCompleted">Status:</label>
+        <select name="isCompleted" id="isCompleted">
+            <option value="">All</option>
+            <option value="true">Completed</option>
+            <option value="false">Pending</option>
+        </select>
+
+        <button type="submit">Filter</button>
+        <a asp-controller="Task" asp-action="Index" class="reset-btn">Reset</a>
+    </form>
+
+    @if (ViewData["NoTasksFound"] != null)
+    {
+        <div class="alert alert-danger mt-3" role="alert">
+            @ViewData["NoTasksFound"]
+        </div>
+    }
+
+
+    <button class="add-task-btn" onclick="location.href='@Url.Action("Create", "Task")'">Add New Task</button>
+
     <table>
         <thead>
             <tr>
                 <th>Description</th>
-                <th>Due Date</th>
+                <th>Due Date & Time</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -39,11 +69,9 @@
         <tbody>
             @foreach (var item in Model)
             {
-                // Set default background color
                 var backgroundColor = "";
                 var textColor = "";
 
-                // Check if task is due today or overdue
                 if (item.DueDate.Date == DateTime.Today && !item.IsCompleted)
                 {
                     backgroundColor = "background-color: #E5F100;";
@@ -55,48 +83,53 @@
 
                 <tr style="@backgroundColor @textColor">
                     <td>@item.Description</td>
-                    <td>@item.DueDate.ToString("d")</td>
+                    <td>@item.DueDate.ToString("yyyy-MM-dd HH:mm")</td> <!-- Displays Date & Time -->
                     <td>
-                        <input type="checkbox" @(item.IsCompleted ? "checked" : "")
-                            onchange="updateStatus(this, '@item.Id')" />
+                        <input type="checkbox" class="status-checkbox"
+                               data-task-id="@item.Id" @(item.IsCompleted ? "checked" : "") />
                         <span class="status-text" id="status-@item.Id">
-                            @(item.IsCompleted ? "Done" : "")
+                            @(item.IsCompleted ? "Done" : "Pending")
                         </span>
                     </td>
                     <td class="no-bg">
                         <button class="edit-btn"
-                            onclick="location.href='@Url.Action("Edit", "Task", new { id = item.Id })'">Edit</button>
+                                onclick="location.href='@Url.Action("Edit", "Task", new { id = item.Id })'">Edit</button>
                         <button class="delete-btn"
-                            onclick="location.href='@Url.Action("Delete", "Task", new { id = item.Id })'">Delete</button>
+                                onclick="location.href='@Url.Action("Delete", "Task", new { id = item.Id })'">Delete</button>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 
-    <button class="add-task-btn" onclick="location.href='@Url.Action("Create", "Task")'">Add New Task</button>
+</div>
 
-    <!-- Show notifications for tasks due today -->
-@if (ViewData["DueTasks"] != null)
-{
-    var dueTasks = ViewData["DueTasks"] as List<ToDoListApp.Models.TaskItem>;
-    if (dueTasks.Any())
-    {
-            <script type="text/javascript">
-                alert("You have tasks due today!");
-            </script>
-    }
-}
-    <div>
-
-
-        <script>
-            function updateStatus(checkbox, taskId) {
-                const statusText = document.getElementById(`status-${taskId}`);
-                if (checkbox.checked) {
-                    statusText.innerText = 'Done';
-                } else {
-                    statusText.innerText = '';
+<script>
+    $(document).ready(function () {
+        $(".status-checkbox").change(function () {
+            var taskId = $(this).data("task-id");
+            var isCompleted = $(this).is(":checked");
+            var statusText = $("#status-" + taskId);
+            
+            $.ajax({
+                url: "/Task/ToggleStatus",
+                type: "POST",
+                data: { id: taskId, isCompleted: isCompleted },
+                headers: {
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function (response) {
+                    if (response.success) {
+                        statusText.text(isCompleted ? "Done" : "Pending");
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert("Failed to update task status.");
                 }
-            }
-        </script>
+            });
+        });
+    });
+</script>
+

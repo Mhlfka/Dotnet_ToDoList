@@ -6,23 +6,31 @@
 
 
 <div class="container_wrapper">
-<div class="containered">
-<h1>Edit Task</h1>
+    <div class="containered">
+        <h1>Edit Task</h1>
 
 
-<form asp-action="Edit">
-    <input type="hidden" asp-for="Id" />
-    <div class="inputs">
-    <div class="input">
-        @* <label>Description</label> *@
-        <input asp-for="Description" placeholder="Task description"/>
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="Id" />
+            <div class="inputs">
+                <div class="input">
+                    @* <label>Description</label> *@
+                    <input asp-for="Description" placeholder="Task description" />
+                </div>
+                <div>
+                    @* <label>Due Date & Time</label> *@
+                    <input type="datetime-local" asp-for="DueDate" class="form-control" />
+                </div>
+
+                @if (ViewData["DuplicateTask"] != null)
+                {
+                    <div class="alert alert-danger" role="alert">
+                        @ViewData["DuplicateTask"]
+                    </div>
+                }
+
+            </div>
+            <button class="button" type="submit">Save</button>
+        </form>
     </div>
-    <div class="input">
-        @* <label>Due Date</label> *@
-        <input asp-for="DueDate" type="date" placeholder="DueDate"/>
-    </div>
-    </div>
-    <button class="button" type="submit">Save</button>
-</form>
-</div>
 </div>

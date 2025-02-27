@@ -11,5 +11,16 @@ namespace ToDoListApp.Data
             : base(options) { }
 
         public DbSet<TaskItem> TaskItems { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<TaskItem>()
+                .HasIndex(t => t.DueDate); // Indexing DueDate for better query performance
+
+            modelBuilder.Entity<TaskItem>()
+                .HasIndex(t => t.IsCompleted); // Indexing IsCompleted for efficient filtering
+        }
     }
 }

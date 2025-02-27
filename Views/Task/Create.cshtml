@@ -5,21 +5,29 @@
 </head>
 
 <div class="container_wrapper">
-<div class="containered">
-<h1 class="create-task">Create Task</h1>
-<form asp-action="Create" method="post" >
-<div class="inputs">
-    <div class="input">
-        @* <label class="input">Description</label> *@
-        <input asp-for="Description" placeholder="Task description" style="background-color: white;"/>
-    </div>
-    <div class="input">
-        @* <label>Due Date</label> *@
-        <input asp-for="DueDate" type="date" placeholder="DueDate"  style="background-color: white;"/>
-    </div>
-</div>
+    <div class="containered">
+        <h1 class="create-task">Create Task</h1>
+        <form asp-action="Create" method="post">
+            <div class="inputs">
+                <div class="input">
+                    @* <label class="input">Description</label> *@
+                    <input asp-for="Description" placeholder="Task description" style="background-color: white;" />
+                </div>
+                <div>
+                    @* <label>Due Date & Time</label> *@
+                    <input type="datetime-local" asp-for="DueDate" class="form-control" />
 
- <button class="button" type="submit">Create</button>
-</form>
-</div>
+                    @if (ViewData["DuplicateTask"] != null)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @ViewData["DuplicateTask"]
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+            <button class="button" type="submit">Create</button>
+        </form>
+    </div>
 </div>
