@@ -2,6 +2,11 @@
 
 <head>
     <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true" />
+<<<<<<< HEAD
+=======
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+>>>>>>> 4f86f29 (Enhanced the design)
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
@@ -25,25 +30,26 @@
 </header>
 
 <div class="todo-container">
-    <h1>To-Do List</h1>
-    
+    @* <h1>To-Do List</h1> *@
+
 
     <!-- Filtering Form -->
-    <form method="get" asp-action="Index" asp-controller="Task">
-        <label for="description">Description:</label>
-        <input type="text" name="description" id="description" />
+    <h2 id="filtering_title">Filter your search:</h2>
+    <form method="get" asp-action="Index" asp-controller="Task" class="filtration">
+        @* <label for="description">Description:</label> *@
+        <input type="text" name="description" id="description" placeholder="Enter task description" />
 
-        <label for="dueDate">Due Date & Time:</label>
+        @* <label for="dueDate">Due Date & Time:</label> *@
         <input type="datetime-local" name="dueDate" id="dueDate" />
 
-        <label for="isCompleted">Status:</label>
+        @* <label for="isCompleted">Status:</label> *@
         <select name="isCompleted" id="isCompleted">
-            <option value="">All</option>
+            <option value="">Select status</option>
             <option value="true">Completed</option>
             <option value="false">Pending</option>
         </select>
 
-        <button type="submit">Filter</button>
+        <button type="submit" id="filter_btn">Filter</button>
         <a asp-controller="Task" asp-action="Index" class="reset-btn">Reset</a>
     </form>
 
@@ -55,52 +61,58 @@
     }
 
 
-    <button class="add-task-btn" onclick="location.href='@Url.Action("Create", "Task")'">Add New Task</button>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Description</th>
-                <th>Due Date & Time</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                var backgroundColor = "";
-                var textColor = "";
-
-                if (item.DueDate.Date == DateTime.Today && !item.IsCompleted)
+    <button class="add-task-btn" onclick="location.href='@Url.Action("Create", "Task")'">Add New Task<i class="fas fa-plus"></i></button>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Due Date & Time</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
                 {
-                    backgroundColor = "background-color: #E5F100;";
-                }
-                else if (item.DueDate.Date < DateTime.Today && !item.IsCompleted)
-                {
-                    backgroundColor = "background-color: #FF7376; color: white;";
-                }
+                    var backgroundColor = "";
+                    var textColor = "";
 
-                <tr style="@backgroundColor @textColor">
-                    <td>@item.Description</td>
-                    <td>@item.DueDate.ToString("yyyy-MM-dd HH:mm")</td> <!-- Displays Date & Time -->
-                    <td>
-                        <input type="checkbox" class="status-checkbox"
-                               data-task-id="@item.Id" @(item.IsCompleted ? "checked" : "") />
+                    if (item.DueDate.Date == DateTime.Today && !item.IsCompleted)
+                    {
+                        backgroundColor = "background-color: #E5F100;";
+                    }
+                    else if (item.DueDate.Date < DateTime.Today && !item.IsCompleted)
+                    {
+                        backgroundColor = "background-color: #FF7376; color: white;";
+                    }
+
+                    <tr style="@backgroundColor @textColor">
+                        <td>@item.Description</td>
+                        <td>@item.DueDate.ToString("yyyy-MM-dd HH:mm")</td>
+                        <td>
+                            <input type="checkbox" class="status-checkbox" data-task-id="@item.Id" @(item.IsCompleted ?
+                                "checked" : "") />
                         <span class="status-text" id="status-@item.Id">
                             @(item.IsCompleted ? "Done" : "Pending")
                         </span>
                     </td>
                     <td class="no-bg">
                         <button class="edit-btn"
-                                onclick="location.href='@Url.Action("Edit", "Task", new { id = item.Id })'">Edit</button>
+                            onclick="location.href='@Url.Action("Edit", "Task", new { id = item.Id })'">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
                         <button class="delete-btn"
-                                onclick="location.href='@Url.Action("Delete", "Task", new { id = item.Id })'">Delete</button>
+                            onclick="location.href='@Url.Action("Delete", "Task", new { id = item.Id })'">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </button>
                     </td>
                 </tr>
-            }
-        </tbody>
-    </table>
+                                }
+            </tbody>
+        </table>
+    </div>
+
 
 </div>
 
@@ -110,7 +122,11 @@
             var taskId = $(this).data("task-id");
             var isCompleted = $(this).is(":checked");
             var statusText = $("#status-" + taskId);
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> 4f86f29 (Enhanced the design)
             $.ajax({
                 url: "/Task/ToggleStatus",
                 type: "POST",
@@ -132,4 +148,7 @@
         });
     });
 </script>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4f86f29 (Enhanced the design)
