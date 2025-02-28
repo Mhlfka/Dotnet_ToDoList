@@ -120,11 +120,7 @@
             var taskId = $(this).data("task-id");
             var isCompleted = $(this).is(":checked");
             var statusText = $("#status-" + taskId);
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> 4f86f29 (Enhanced the design)
             $.ajax({
                 url: "/Task/ToggleStatus",
                 type: "POST",
