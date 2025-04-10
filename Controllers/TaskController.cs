@@ -44,21 +44,20 @@ namespace ToDoListApp.Controllers
             return View("~/Views/Home/Index.cshtml", taskList.Any() ? taskList : await _context.TaskItems.ToListAsync());
         }
 
-        [Authorize] // ✅ Only logged-in users can access this page
+        [Authorize]
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
-        [Authorize] // ✅ Prevent non-authenticated users from creating tasks
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(TaskItem newTask)
         {
             if (ModelState.IsValid)
             {
-                // Check for existing task with same Date & Time
                 bool taskExists = await _context.TaskItems
                     .AnyAsync(t => t.DueDate == newTask.DueDate);
 
@@ -75,7 +74,7 @@ namespace ToDoListApp.Controllers
             return View(newTask);
         }
 
-        [Authorize] // ✅ Prevent unauthorized users from editing tasks
+        [Authorize]
         public async Task<IActionResult> Edit(int id)
         {
             var taskItem = await _context.TaskItems.FindAsync(id);
@@ -86,7 +85,7 @@ namespace ToDoListApp.Controllers
             return View(taskItem);
         }
 
-        [Authorize] // ✅ Only logged-in users can edit tasks
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, TaskItem updatedTask)
@@ -98,7 +97,6 @@ namespace ToDoListApp.Controllers
 
             if (ModelState.IsValid)
             {
-                // Ensure no other task (excluding itself) has the same Due Date & Time
                 bool taskExists = await _context.TaskItems
                     .AnyAsync(t => t.DueDate == updatedTask.DueDate && t.Id != id);
 
@@ -129,7 +127,7 @@ namespace ToDoListApp.Controllers
             return View(updatedTask);
         }
 
-        [Authorize] // ✅ Only logged-in users can delete tasks
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var task = await _context.TaskItems.FindAsync(id);
@@ -140,7 +138,7 @@ namespace ToDoListApp.Controllers
             return View(task);
         }
 
-        [Authorize] // ✅ Only logged-in users can delete tasks
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -159,6 +157,7 @@ namespace ToDoListApp.Controllers
             return _context.TaskItems.Any(e => e.Id == id);
         }
 
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ToggleStatus(int id, bool isCompleted)
@@ -169,19 +168,17 @@ namespace ToDoListApp.Controllers
                 return NotFound();
             }
 
-            // Update the IsCompleted status
             task.IsCompleted = isCompleted;
 
             try
             {
                 await _context.SaveChangesAsync();
-                return Json(new { success = true }); // Return success response
+                return Json(new { success = true });
             }
             catch (Exception)
             {
                 return Json(new { success = false, message = "Failed to update status." });
             }
         }
-
     }
 }

@@ -162,6 +162,10 @@ thead {
   background: white; /* Ensure the header remains visible */
   z-index: 2;
 }
+thead tr{
+  background:linear-gradient( to top, #090069, #101010);
+  color: white;
+}
 
 /* th, td {
   padding: 10px;
